@@ -1,5 +1,33 @@
 --CREATE SCRIPTS
 /* put your create scripts here - your script should not be commented out */
+CREATE TABLE ResearchGroup (
+    groupID VARCHAR(10),
+    groupDetails VARCHAR(255),
+    groupMoto VARCHAR(255),
+    CONSTRAINT pk_group PRIMARY KEY (groupID)
+
+)
+CREATE TABLE Academic (
+    academicID VARCHAR(10),
+    academicQualification VARCHAR(255),
+    employmentDate DATE,
+    groupID VARCHAR(10),
+    CONSTRAINT pk_academic PRIMARY KEY (academicID),
+    CONSTRAINT fk_academic_group FOREIGN KEY (groupID) REFERENCES ResearchGroup(groupID)
+)
+CREATE TABLE AcademicToPublication (
+    linkID INTEGER,
+    academicID VARCHAR(10),
+    publicationID VARCHAR(10),
+    CONSTRAINT pk_link PRIMARY KEY (linkID),
+    CONSTRAINT fk_academic_link FOREIGN KEY (academicID) REFERENCES Academic(academicID),
+    CONSTRAINT fk_publication_link FOREIGN KEY (publicaitonID) REFERENCES Publication(publicaitonID)
+)
+CREATE TABLE Publication (
+    publicationID VARCHAR(10),
+    CONSTRAINT pk_publication PRIMARY KEY (publicaitonID)
+)
+COMMIT;
 --INSERT SCRIPTS
 /* put your insert scripts here - your script should not be commented out */
 --SELECT SCRIPTS
