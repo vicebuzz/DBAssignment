@@ -3,7 +3,7 @@
 -- research group table
 CREATE TABLE ResearchGroup (
     groupID VARCHAR(10),
-    groupDetails VARCHAR(255),
+    groupName VARCHAR(255),
     groupMoto VARCHAR(255),
     establishingDate DATE,
     CONSTRAINT pk_group PRIMARY KEY (groupID)
