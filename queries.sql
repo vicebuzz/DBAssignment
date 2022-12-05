@@ -107,6 +107,28 @@ SELECT
 FROM Academic
 INNER JOIN ResearchGroup ON Academic.GroupID = ResearchGroup.GroupID
 WHERE Academic.academicName = 'Dr. Bert Kibbler'; --'Dr. Bert Kibbler' has one collabaration, 'Dr. Barry Kripke' and 'Dr. Bernadette Rostenkowski-Wolowitz' have none, rest of the academics have multiple
+--report list item 3 (natural way)
+SELECT * 
+FROM
+(
+    SELECT  Academic.AcademicName, 
+            Academic.AcademicQualification, 
+            Academic.EmploymentDate, 
+            ResearchGroup.groupName, 
+            ResearchGroup.GroupMoto, 
+            ResearchGroup.EstablishingDate, 
+            COUNT(*)NumberOfCollaborations
+    FROM AcademicToPublication
+    INNER JOIN Academic ON AcademicToPublication.academicID = Academic.academicID
+    INNER JOIN ResearchGroup ON Academic.groupID = ResearchGroup.groupID
+    GROUP BY Academic.AcademicName, 
+            Academic.AcademicQualification, 
+            Academic.EmploymentDate, 
+            ResearchGroup.groupName, 
+            ResearchGroup.GroupMoto, 
+            ResearchGroup.EstablishingDate
+)
+WHERE rownum <= 1;
 --report list item 4
 SELECT *
 FROM
