@@ -6,22 +6,35 @@ SELECT Academic.AcademicName, Academic.AcademicQualification, Academic.Employmen
 FROM Academic
 INNER JOIN ResearchGroup ON Academic.GroupID = ResearchGroup.GroupID;
 --report list item 3
-SELECT 
-    Academic.AcademicName, 
-    Academic.AcademicQualification, 
-    Academic.EmploymentDate, 
-    ResearchGroup.GroupName, 
-    ResearchGroup.GroupMoto, 
-    ResearchGroup.EstablishingDate, 
-    (
-        SELECT COUNT(*)
-        FROM AcademicToPublication
-        INNER JOIN Academic ON AcademicToPublication.academicID = Academic.academicID
-        WHERE Academic.academicName = 'Dr. Bert Kibbler' --'Dr. Bert Kibbler' has one collabaration, 'Dr. Barry Kripke' and 'Dr. Bernadette Rostenkowski-Wolowitz' have none, rest of the academics have multiple
-    ) NumberOfCollaborations
-FROM Academic
-INNER JOIN ResearchGroup ON Academic.GroupID = ResearchGroup.GroupID
-WHERE Academic.academicName = 'Dr. Bert Kibbler'; --'Dr. Bert Kibbler' has one collabaration, 'Dr. Barry Kripke' and 'Dr. Bernadette Rostenkowski-Wolowitz' have none, rest of the academics have multiple
+SELECT * 
+FROM
+(
+    SELECT  Academic.AcademicName, 
+            Academic.AcademicQualification, 
+            Academic.EmploymentDate, 
+            ResearchGroup.groupName, 
+            ResearchGroup.GroupMoto, 
+            ResearchGroup.EstablishingDate, 
+            COUNT(*)NumberOfCollaborations
+    FROM AcademicToPublication
+    INNER JOIN Academic ON AcademicToPublication.academicID = Academic.academicID
+    INNER JOIN ResearchGroup ON Academic.groupID = ResearchGroup.groupID
+    WHERE AcademicToPublication.publicationID IN (
+        SELECT publicationID 
+        FROM (
+            SELECT COUNT(*) NumberOfOccurances, publicationID
+            FROM AcademicToPublication
+            GROUP BY publicationID
+        )
+        WHERE NumberOfOccurances > 1
+    )
+    GROUP BY Academic.AcademicName, 
+            Academic.AcademicQualification, 
+            Academic.EmploymentDate, 
+            ResearchGroup.groupName, 
+            ResearchGroup.GroupMoto, 
+            ResearchGroup.EstablishingDate
+)
 --report list item 4
 SELECT *
 FROM
@@ -33,6 +46,15 @@ FROM
         FROM AcademicToPublication
         INNER JOIN Academic ON AcademicToPublication.academicID = Academic.academicID
         INNER JOIN ResearchGroup ON Academic.groupID = ResearchGroup.groupID
+        WHERE AcademicToPublication.publicationID IN (
+            SELECT publicationID 
+            FROM (
+                SELECT COUNT(*) NumberOfOccurances, publicationID
+                FROM AcademicToPublication
+                GROUP BY publicationID
+            )
+            WHERE NumberOfOccurances > 1
+        )
         GROUP BY academic.academicname, ResearchGroup.groupName
     )
     GROUP BY groupName
