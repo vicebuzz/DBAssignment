@@ -120,6 +120,7 @@ FROM
             ResearchGroup.GroupMoto, 
             ResearchGroup.EstablishingDate
 )
+WHERE rownum <= 1;
 --report list item 4
 SELECT *
 FROM
